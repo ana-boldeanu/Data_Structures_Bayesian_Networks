@@ -1,0 +1,143 @@
+// Boldeanu Ana-Maria
+// 311 CD
+
+Structuri de Date - Tema 3
+
+========================== Structuri folosite ===============================
+
+- TNode este un nod dintr-o lista simplu inlantuita. Contine numele nodului
+si indexul corespunzator acestuia.
+
+- Am folosit un  vector de nume (char **nodeNames) care retine numele nodurilor
+existente in graful curent pentru a putea atribui fiecarui nume cate un index.
+De exemplu, daca nodurile sunt A si B (citite in ordinea asta), indexul nodului 
+A este 0 si indexul nodului B este 1.
+
+- Am folosit pointerul la structura TNode pentru fiecare lista folosita in cod,
+fie ea lista de adiacenta sau lista pentru retinerea stramosilor unui nod, sau
+lista pentru retinerea nodurilor care sunt pastrate in graf pentru interogari
+(pentru acestea din urma am folosit doar list->index, nu si numele nodului).
+
+- TGraphL este structura corespunzatoare grafului. Contine numarul de noduri si
+vectorul de liste de adiacenta pentru fiecare nod.
+
+=============================================================================
+
+
+======================== Descrierea fisierelor sursa ========================
+
+main.c
+    Contine 2 functii principale folosite in cadrul cerintelor si functia main.
+
+    int main()
+
+        - Citirea din fisiere, creearea grafului (si a unei copii de graf pentru
+	cerinta 2) si alocari de memorie.
+
+        - Am construit vectorul de nume char **nodeNames ca sa atribui fiecarui 
+        nod cate un index.
+        - Functia auxiliara get_index parcurge acest vector de nume si determina 
+        indexul corespunzator numelui primit ca argument.
+
+        - Functia auxiliara add_YtoXList este cam ca addEdges din laborator si 
+        se ocupa de construirea listei de adiacente.
+            - Primeste ca argument numele nodului Y de adaugat in lista nodului
+            X, indexul lui Y ca sa il bage in structura nodului Y si indexul lui
+            X ca sa stie in ce lista il pune pe Y).
+
+
+========> Descriere Cerinta 1 <==============================================
+
+    int DFS_isCicle(TGraphL* graph, TNode *parentsList, int index)
+
+        - Functie de parcurgere a grafului DFS recursiva care construieste pe
+        parcurs o lista cu nodurile prin care a trecut deja (parentsList).
+
+        - int index este indexul nodului curent.
+        - new_list este lista de stramosi in care am adaugat nodul curent.
+
+        - In loop, parcurg lista de adiacenta si lista de stramosi in felul
+        urmator:
+            - Pentru fiecare nod din lista de adiacenta a nodului curent,
+            parcurg lista de stramosi si verific daca vreunul dintre stramosi 
+            are acelasi index cu indexul nodului curent (adica daca am gasit 
+            un ciclu).
+            - In cazul in care nu am gasit inca un ciclu, apelez functia din nou 
+            pentru nodul curent, cu lista de stramosi actualizata.
+            - La revenirea din recursivitate (linia 38), trec la urmatorul stramos 
+            din new_list (adica "uit" ultimul stramos adaugat, pentru ca acesta 
+            este de fapt frate cu nodul curent).
+
+        - Functia intoarce 1 daca a gasit ciclu.
+
+
+========> Descriere Cerinta 2 <==============================================
+
+    int Cerinta2(TGraphL *graph, char **nodeNames, char *Xname, char *Yname, 
+    char *observed)
+
+        - Functie care primeste o mie de argumente pentru ca asa trebuie!
+        - In main, construiesc o copie a grafului initial pentru fiecare interogare
+        si chem functia asta cu copia grafului, vectorul de nume pt indexare,
+        numele nodurilor X si Y (cele pentru care se verifica independenta) si
+        stringul corespunzator nodurilor de observare.
+        - Functia intoarce 1 daca X si Y sunt neindependente.
+
+        - Lucrez la nivelul acestei functii cu indecsii nodurilor, nu si numele.
+
+    ---> Pentru pasul 1, trebuie sa determin ce noduri pastrez:
+
+        - Functia get_ancestorsList primeste ca argument numele unui nod X si 
+        construieste acumulativ o lista de stramosi parents_X prin recursivitate:
+            - Pentru fiecare nod din graf, parcurge lista de adiacenta si verifica
+            daca nodul copil X este inclus in aceasta. Daca este, trebuie sa 
+            parcurga si lista curenta de stramosi ca sa nu il adauge de 2 ori in 
+            caz ca stramosul exista deja acolo.
+
+        - to_keep e lista cu indecsii nodurilor ce trebuie pastrate.
+        - add_toList e functie de inserare a unui nod intr-o lista (primeste ca 
+        argument lista si indexul de adaugat).
+
+        - Pe masura ce folosesc strtok ca sa sparg stringul observed in nodurile 
+        de observare, le adaug pe acestea in vectorul cu numele nodurilor de 
+        observare char **obsNames si le adaug pe acestea impreuna cu stramosii lor 
+        in to_keep folosit get_ancestorsList si get_index pentru fiecare.
+
+        - Apoi elimin nodurile care nu trebuie pastrate:
+            - Parcurg toate nodurile si folosesc functia contains(to_keep, idx) ca 
+            sa vad daca se afla in lista mea de noduri pastrate.
+            - Daca nodul cu indexul idx nu se afla acolo, folosesc o functie 
+            remove_fromList ca sa sterg idx din fiecare lista de adiacenta in care
+            se afla (adica sterg muchiile care il contin).
+
+    ---> Pentru pasul 2, am nevoie de o copie a grafului initial pentru ca voi
+        face modificari in-place pe cel curent.
+
+        - Folosesc o functie get_parentsList care primest ca argument indexul.
+        nodului X si intoarce o lista cu indecsii nodurilor ce il au copil pe X
+        - Prin argument intoarce si numarul parintilor din lista determinata.
+        - Daca sunt mai mult de 2 parinti, parcurg lista de parinti cu 2 pointeri 
+        si fac legaturi neorientate intre fiecare 2 parinti.
+
+    ---> Pentru pasul 3, parcurg iar listele de adiacente din graf si pentru 
+        fiecare nod k adaug parintele k in listele de adiacenta ale copiilor sai,
+        astfel eliminand orientarea arcelor.
+
+    ---> Pentru pasul 4, determin indecsii nodurilor de observare si folosesc 
+        remove_fromList ca sa le sterg pe acestea din graf (adica din listele de
+        adiacenta) si din lista to_keep.
+
+    ---> Pentru pasul 5, determin indecsii pentru nodurile initiale X si Y 
+        si verific intai daca ele se mai afla in lista de noduri pastrate to_keep
+        (daca nu, intorc 0, adica ele sunt independente conditional).
+
+        - Daca ambele se afla in graf, trebuie sa verific daca exista o cale intre 
+        ele si folosesc tot o parcurgere recursiva DFS cu functia DFS_areConnected
+        - Functia primeste ca argument indexul nodului initial (init) si indexul 
+        nodului curent (curr) si, pargurgand graful DFS, verifica daca se poate 
+        ajunge la curr = init (adica la nodul initial).
+        - Chem functia cu init = Xidx si curr = Yidx ca sa plece din Y si sa
+        verifice daca se poate ajunge in X
+        - Functia intoarce 1 daca X si Y sunt conectate prin orice cale
+
+============================== Victory!! ==================================

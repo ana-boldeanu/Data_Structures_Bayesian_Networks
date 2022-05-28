@@ -1,0 +1,11 @@
+3 2
+A B C
+A B
+B C
+6
+A ; C|B
+C ; A|
+B ; A|C
+A ; B|
+B ; C|A
+C ; B|

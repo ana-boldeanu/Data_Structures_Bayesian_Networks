@@ -1,0 +1,16 @@
+7 7
+A B Y E D C X
+A B
+B Y
+E Y
+E D
+C D
+X C
+X A
+6
+X ; Y|A
+X ; Y|A B
+X ; Y|B E
+X ; Y|C
+X ; Y|C E
+X ; Y|A D

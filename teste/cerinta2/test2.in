@@ -1,0 +1,18 @@
+9 10
+Season Atm_Press Allergies Rain Grass Umbrellas Dog_Bark Cat_Mood Cat_Hide
+Season Allergies
+Season Rain
+Season Umbrellas
+Atm_Press Rain
+Rain Grass
+Rain Umbrellas
+Rain Dog_Bark
+Rain Cat_Mood
+Dog_Bark Cat_Hide
+Cat_Mood Cat_Hide
+5
+Season ; Cat_Mood|Rain
+Season ; Cat_Hide|Rain
+Season ; Cat_Hide|Rain Dog_Bark
+Allergies ; Cat_Hide|
+Atm_Press ; Cat_Hide|Grass Allergies Dog_Bark

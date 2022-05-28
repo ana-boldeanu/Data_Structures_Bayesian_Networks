@@ -1,0 +1,21 @@
+6 8
+A B C D E F
+A B
+A C
+B D
+B E
+E C
+E F
+C F
+D F
+10
+A ; E|
+A ; D|
+A ; F|
+C ; E|
+C ; F|
+D ; C|
+A ; D|B C
+B ; F|A E C
+B ; C|A D F
+D ; C|A
